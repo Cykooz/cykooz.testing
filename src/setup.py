@@ -32,7 +32,7 @@ setup(
     long_description=README + '\n\n' + CHANGES,
     long_description_content_type='text/x-rst',
     classifiers=[
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2.7',

@@ -14,6 +14,14 @@
 CHANGELOG
 *********
 
+Next release
+============
+
+Bug Fixes
+---------
+
+- Fixed "Development Status" of package.
+
 1.0 (2019-07-12)
 ================
 
