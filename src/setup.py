@@ -52,7 +52,6 @@ setup(
     url='https://github.com/Cykooz/cykooz.testing',
     package_dir={'': '.'},
     packages=find_packages(),
-    namespace_packages=['cykooz'],
     include_package_data=True,
     package_data={},
     zip_safe=False,

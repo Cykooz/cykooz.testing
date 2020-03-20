@@ -2,7 +2,7 @@
 set -e
 
 CUR_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-cd ${CUR_DIR}
+cd "${CUR_DIR}"
 
 TWINE_REPOSITORY='pypi'
 BIN_DIR="${CUR_DIR}/bin"
@@ -12,7 +12,7 @@ TWINE="${CUR_DIR}/bin/twine"
 cd src
 
 echo "Check MANIFEST"
-${BIN_DIR}/check-manifest -p ${PYTHON}
+${BIN_DIR}/check-manifest -p "${PYTHON}"
 echo
 echo "Build SDIST and WHEEL"
 ${PYTHON} setup.py -q sdist bdist_wheel
@@ -24,7 +24,7 @@ rm -rf dist build
 
 echo
 echo "Check not committed changes"
-NOT_COMMITTED=`git status --untracked-files=no --porcelain`
+NOT_COMMITTED=$(git status --untracked-files=no --porcelain)
 if [[ "$NOT_COMMITTED" ]]
 then
     echo "ERROR: You have not committed changes!"
@@ -38,7 +38,7 @@ if [[ $1 ]]
 then
     VERSION=$1
 fi
-VERSION=`${PYTHON} version.py -u ${VERSION}`
+VERSION=$(${PYTHON} version.py -u ${VERSION})
 
 if [[ -z "$VERSION" ]]
 then
@@ -46,7 +46,7 @@ then
     exit 1
 fi
 
-NOT_COMMITTED=`git status --untracked-files=no --porcelain`
+NOT_COMMITTED=$(git status --untracked-files=no --porcelain)
 if [[ "$NOT_COMMITTED" ]]
 then
     echo Commit updated CHANGES.rst for version ${VERSION}
@@ -60,7 +60,7 @@ then
     git push --tags
 fi
 
-cd ${CUR_DIR}
+cd "${CUR_DIR}"
 
 echo "Make release"
 cd src
@@ -69,5 +69,5 @@ ${PYTHON} setup.py sdist bdist_wheel
 TWINE_REPOSITORY=${TWINE_REPOSITORY} ${TWINE} upload dist/*
 rm -rf dist build
 
-cd ${CUR_DIR}
+cd "${CUR_DIR}"
 echo "OK"
