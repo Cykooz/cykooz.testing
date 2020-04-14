@@ -16,6 +16,7 @@ __all__ = (
     'List', 'L',
     'AnyValue', 'ANY',
     'RegExpString', 'R',
+    'Json', 'J',
 )
 
 

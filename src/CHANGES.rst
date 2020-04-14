@@ -14,13 +14,21 @@
 CHANGELOG
 *********
 
+Next release
+============
+
+Bug Fixes
+---------
+
+- Added new helper into ``__all__``.
+
 1.1 (2020-04-14)
 ================
 
 Features
 --------
 
-- Added new helper `Json`.
+- Added new helper ``Json``.
 
 1.0.3 (2020-03-20)
 ==================

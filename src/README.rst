@@ -234,7 +234,7 @@ argument of this class.
     True
 
 Complex example
-===============
+***************
 
 .. code-block:: python
 
@@ -254,7 +254,10 @@ Complex example
     >>> some_value == D({
     ...     'created': R('^2020-04.*'),
     ...     'is_active': True,
-    ...     'items': L([{'key': 'a', 'value': 1}, D({'value': ANY})]),
+    ...     'items': L([
+    ...         {'key': 'a', 'value': 1},
+    ...         D({'value': ANY}),
+    ...     ]),
     ...     'source': Url('https://domain.com/item?t=total&p=0'),
     ...     'response': J({'status': 200, 'body': ANY}),
     ... })
