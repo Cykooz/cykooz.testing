@@ -133,6 +133,7 @@ to give regexp pattern.
 
 .. code-block:: python
 
+    >>> from cykooz.testing import RegExpString
     >>> v = RegExpString('first.*')
     >>> v == 1
     False
@@ -187,4 +188,74 @@ of parameters in query strings.
     >>> 'http://domain.com/container?offset=0&limit=6' == url1
     True
     >>> {'key': 'http://domain.com/container?offset=0&limit=6'} == {'key': url1}
+    True
+
+Json
+====
+
+An instance of this class will be equal to any 'bytes' or 'str' value
+if object decoded by JSON-decoder from this value is equal to the first
+argument of this class.
+
+.. code-block:: python
+
+    >>> from cykooz.testing import Json
+    >>> v = Json({'foo': 1, 'bar': 'hello'})
+    >>> other = '{"bar": "hello", "foo": 1}'
+    >>> v == other
+    True
+    >>> other == v
+    True
+    >>> other != v
+    False
+    >>> v == 1
+    False
+    >>> 1 == v
+    False
+    >>> v != 1
+    True
+    >>> v == 'not json'
+    False
+    >>> 'not json' == v
+    False
+    >>> v != 'not json'
+    True
+    >>> v
+    <Json: {'foo': 1, 'bar': 'hello'}>
+    >>> {v: 1}
+    Traceback (most recent call last):
+    ...
+    TypeError: unhashable type: 'Json'
+    >>> [v, v, v] == [other, 2, 'first class']
+    False
+    >>> [v, v, v] == [other, other, other]
+    True
+    >>> '"json str"' == Json('json str')
+    True
+
+Complex example
+===============
+
+.. code-block:: python
+
+    >>> from cykooz.testing import D, L, R, J, Url, ANY
+    >>> some_value = {
+    ...     'created': '2020-04-14T12:34:00.002000+00:00',
+    ...     'is_active': True,
+    ...     'items': [
+    ...         {'key': 'a', 'value': 1},
+    ...         {'key': 'b', 'value': 2},
+    ...         {'key': 'c', 'value': 3},
+    ...     ],
+    ...     'source': 'https://domain.com/item?p=0&t=total',
+    ...     'response': '{"status": 200, "body": "OK"}',
+    ...     'size': 1024,
+    ... }
+    >>> some_value == D({
+    ...     'created': R('^2020-04.*'),
+    ...     'is_active': True,
+    ...     'items': L([{'key': 'a', 'value': 1}, D({'value': ANY})]),
+    ...     'source': Url('https://domain.com/item?t=total&p=0'),
+    ...     'response': J({'status': 200, 'body': ANY}),
+    ... })
     True

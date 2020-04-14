@@ -3,6 +3,7 @@
 :Authors: cykooz
 :Date: 19.11.2015
 """
+import json
 import re
 
 import six
@@ -236,8 +237,80 @@ class RegExpString(object):
         return '<RegExpString: %s>' % self.pattern
 
 
+class Json(object):
+    """An instance of this class will be equal to any 'bytes' or 'str' value
+    if object decoded by JSON-decoder from this value is equal to the first
+    argument of this class.
+
+        >>> v = Json({'foo': 1, 'bar': 'hello'})
+        >>> other = '{"bar": "hello", "foo": 1}'
+        >>> v == other
+        True
+        >>> other == v
+        True
+        >>> other != v
+        False
+        >>> v == 1
+        False
+        >>> 1 == v
+        False
+        >>> v != 1
+        True
+        >>> v == 'not json'
+        False
+        >>> 'not json' == v
+        False
+        >>> v != 'not json'
+        True
+        >>> v
+        <Json: {'foo': 1, 'bar': 'hello'}>
+        >>> {v: 1}
+        Traceback (most recent call last):
+        ...
+        TypeError: unhashable type: 'Json'
+        >>> [v, v, v] == [other, 2, 'first class']
+        False
+        >>> [v, v, v] == [other, other, other]
+        True
+        >>> '"json str"' == Json('json str')
+        True
+    """
+
+    def __init__(self, value, **kwargs):
+        self.value = value
+        self.kwargs = kwargs
+
+    __hash__ = None
+
+    def __eq__(self, other):
+        if isinstance(other, self.__class__):
+            return self.value == other.value
+
+        if isinstance(other, six.binary_type):
+            try:
+                other = other.decode('utf-8')
+            except UnicodeDecodeError:
+                return False
+
+        if isinstance(other, six.text_type):
+            try:
+                other = json.loads(other, **self.kwargs)
+                return self.value == other
+            except ValueError:
+                pass
+
+        return False
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    def __repr__(self):
+        return '<Json: %r>' % self.value
+
+
 # Short aliases
 ANY = AnyValue()
 D = Dict
 L = List
 R = RegExpString
+J = Json

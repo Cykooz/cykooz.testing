@@ -14,6 +14,14 @@
 CHANGELOG
 *********
 
+Next release
+============
+
+Features
+--------
+
+- Added new helper `Json`.
+
 1.0.3 (2020-03-20)
 ==================
 
