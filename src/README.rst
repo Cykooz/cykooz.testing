@@ -16,20 +16,16 @@ without regard to keys that did not presents in the ``Dict`` instance.
 .. code-block:: python
 
     >>> from cykooz.testing import Dict
-    >>> d1 = Dict(a=1, b='foo')
-    >>> d2 = {'a': 1, 'b': 'foo', 'c': True}
-    >>> d1 == d2
+    >>> expected = Dict(a=1, b='foo')
+    >>> d1 = {'a': 1, 'b': 'foo', 'c': True}
+    >>> d1 == expected
     True
-    >>> d2 == d1
-    True
+    >>> d1 != expected
+    False
+    >>> d2 = {'a': 1, 'c': True}
+    >>> d2 == expected
+    False
     >>> d1 != d2
-    False
-    >>> d3 = {'a': 1, 'c': True}
-    >>> d1 == d3
-    False
-    >>> d3 == d1
-    False
-    >>> d1 != d3
     True
     >>> Dict({'a': 1})
     Dict({'a': 1})
@@ -51,27 +47,36 @@ without regard to extra items contains in the other list object.
 .. code-block:: python
 
     >>> from cykooz.testing import List
-    >>> l1 = List([1, 'foo'])
-    >>> l2 = [1, 'foo', True]
-    >>> l1 == l2
+    >>> expected = List([1, 'foo'])
+    >>> l1 = [1, 'foo', True]
+    >>> l1 == expected
     True
-    >>> l2 == l1
+    >>> l1 != expected
+    False
+    >>> l2 = [1, True]
+    >>> l2 == expected
+    False
+    >>> l2 != expected
     True
-    >>> l1 != l2
+    >>> expected == [1]
     False
-    >>> l3 = [1, True]
-    >>> l1 == l3
-    False
-    >>> l3 == l1
-    False
-    >>> l1 != l3
+    >>> [{'a': 1}, {'b': 2}] == List([Dict(), Dict()])
     True
-    >>> l1 == [1]
-    False
-    >>> List([1, 'foo', True])
-    List([1, 'foo', True])
-    >>> List([Dict(), Dict()]) == [{'a': 1}, {'b': 2}]
+
+Also supported comparing without regard of ordering of items.
+
+.. code-block:: python
+
+    >>> expected = List([True, 1], ignore_order=True)
+    >>> l1 = [1, 'foo', True]
+    >>> l1 == expected
     True
+    >>> l1 != expected
+    False
+    >>> [{'a': 1}, {'b': 2}] == List([Dict(), Dict()], ignore_order=True)
+    Traceback (most recent call last):
+    ...
+    TypeError: unhashable type: 'Dict'
 
 Short alias:
 
@@ -176,18 +181,18 @@ of parameters in query strings.
 .. code-block:: python
 
     >>> from cykooz.testing import Url
-    >>> url1 = Url('http://domain.com/container?limit=6&offset=0')
-    >>> url2 = Url('http://domain.com/container?offset=0&limit=6')
+    >>> url1 = Url('https://domain.com/container?limit=6&offset=0')
+    >>> url2 = Url('https://domain.com/container?offset=0&limit=6')
     >>> url1 == url2
     True
-    >>> url2 = Url('http://domain.com/container?limit=6')
+    >>> url2 = Url('https://domain.com/container?limit=6')
     >>> url1 == url2
     False
-    >>> url1 == 'http://domain.com/container?offset=0&limit=6'
+    >>> url1 == 'https://domain.com/container?offset=0&limit=6'
     True
-    >>> 'http://domain.com/container?offset=0&limit=6' == url1
+    >>> 'https://domain.com/container?offset=0&limit=6' == url1
     True
-    >>> {'key': 'http://domain.com/container?offset=0&limit=6'} == {'key': url1}
+    >>> {'key': 'https://domain.com/container?offset=0&limit=6'} == {'key': url1}
     True
 
 Json

@@ -14,6 +14,15 @@
 CHANGELOG
 *********
 
+Next release
+============
+
+Changes
+-------
+
+- Added argument ``ignore_order`` into ``List`` helper to
+  comparing of lists without regard of ordering of items.
+
 1.1.2 (2020-04-14)
 ==================
 

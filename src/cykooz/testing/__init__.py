@@ -25,18 +25,18 @@ class Url(object):
     without regard to the vagaries of encoding, escaping, and ordering
     of parameters in query strings.
 
-        >>> url1 = Url('http://domain.com/container?limit=6&offset=0')
-        >>> url2 = Url('http://domain.com/container?offset=0&limit=6')
+        >>> url1 = Url('https://domain.com/container?limit=6&offset=0')
+        >>> url2 = Url('https://domain.com/container?offset=0&limit=6')
         >>> url1 == url2
         True
-        >>> url2 = Url('http://domain.com/container?limit=6')
+        >>> url2 = Url('https://domain.com/container?limit=6')
         >>> url1 == url2
         False
-        >>> url1 == 'http://domain.com/container?offset=0&limit=6'
+        >>> url1 == 'https://domain.com/container?offset=0&limit=6'
         True
-        >>> 'http://domain.com/container?offset=0&limit=6' == url1
+        >>> 'https://domain.com/container?offset=0&limit=6' == url1
         True
-        >>> {'key': 'http://domain.com/container?offset=0&limit=6'} == {'key': url1}
+        >>> {'key': 'https://domain.com/container?offset=0&limit=6'} == {'key': url1}
         True
     """
 
@@ -62,20 +62,20 @@ class Dict(dict):
     """A dict object that can be compared with other dict object
     without regard to keys that did not presents in the ``Dict`` instance.
 
-        >>> d1 = Dict(a=1, b='foo')
-        >>> d2 = {'a': 1, 'b': 'foo', 'c': True}
-        >>> d1 == d2
+        >>> expected = Dict(a=1, b='foo')
+        >>> d1 = {'a': 1, 'b': 'foo', 'c': True}
+        >>> d1 == expected
         True
-        >>> d2 == d1
+        >>> expected == d1
         True
+        >>> d1 != expected
+        False
+        >>> d2 = {'a': 1, 'c': True}
+        >>> d2 == expected
+        False
+        >>> expected == d2
+        False
         >>> d1 != d2
-        False
-        >>> d3 = {'a': 1, 'c': True}
-        >>> d1 == d3
-        False
-        >>> d3 == d1
-        False
-        >>> d1 != d3
         True
         >>> Dict({'a': 1})
         Dict({'a': 1})
@@ -103,37 +103,52 @@ class List(list):
     """A list object that can be compared with other list object
     without regard to extra items contains in the other list object.
 
-        >>> l1 = List([1, 'foo'])
-        >>> l2 = [1, 'foo', True]
-        >>> l1 == l2
+        >>> expected = List([1, 'foo'])
+        >>> l1 = [1, 'foo', True]
+        >>> l1 == expected
         True
-        >>> l2 == l1
+        >>> expected == l1
         True
-        >>> l1 != l2
+        >>> l1 != expected
         False
-        >>> l3 = [1, True]
-        >>> l1 == l3
+        >>> l2 = [1, True]
+        >>> l2 == expected
         False
-        >>> l3 == l1
+        >>> expected == l2
         False
-        >>> l1 != l3
+        >>> l2 != expected
         True
-        >>> l1 == [1]
+        >>> expected == [1]
         False
         >>> List([1, 'foo', True])
         List([1, 'foo', True])
-        >>> List([Dict(), Dict()]) == [{'a': 1}, {'b': 2}]
+        >>> [{'a': 1}, {'b': 2}] == List([Dict(), Dict()])
         True
+        >>> expected = List([True, 1], ignore_order=True)
+        >>> expected
+        List([True, 1], ignore_order=True)
+        >>> l3 = [1, 'foo', True]
+        >>> l3 == expected
+        True
+        >>> l3 != expected
+        False
+        >>> [{'a': 1}, {'b': 2}] == List([Dict(), Dict()], ignore_order=True)
+        Traceback (most recent call last):
+        ...
+        TypeError: unhashable type: 'Dict'
     """
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, ignore_order=False, **kwargs):
         super(List, self).__init__(*args, **kwargs)
+        self.ignore_order = ignore_order
 
     def __eq__(self, other):
         if not isinstance(other, list):
             return False
         if len(self) > len(other):
             return False
+        if self.ignore_order:
+            return len(set(self) - set(other)) == 0
         for v1, v2 in zip(self, other):
             if v1 != v2:
                 return False
@@ -143,7 +158,10 @@ class List(list):
         return not self.__eq__(other)
 
     def __repr__(self):
-        return 'List(%s)' % super(List, self).__repr__()
+        suffix = ''
+        if self.ignore_order:
+            suffix = ', ignore_order=True'
+        return 'List(%s%s)' % (super(List, self).__repr__(), suffix)
 
 
 class AnyValue(object):
