@@ -3,6 +3,7 @@
 :Authors: cykooz
 :Date: 25.06.2015
 """
+
 import os
 import sys
 
@@ -36,16 +37,16 @@ setup(
         'Intended Audience :: Developers',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
-        "Programming Language :: Python :: 3.9",
-        "Programming Language :: Python :: 3.10",
-        "Programming Language :: Python :: 3.11",
-        "Programming Language :: Python :: 3.12",
-        "Programming Language :: Python :: 3.13",
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
+        'Programming Language :: Python :: 3.12',
+        'Programming Language :: Python :: 3.13',
         'Programming Language :: Python :: Implementation :: CPython',
         'Programming Language :: Python :: Implementation :: PyPy',
         'Topic :: Software Development :: Testing',
-        'License :: OSI Approved :: MIT License',
     ],
+    license='MIT',
     keywords='',
     author='Cykooz',
     author_email='cykooz@gmail.com',
@@ -64,9 +65,8 @@ setup(
         'setuptools',
     ],
     entry_points={
-        'console_scripts':
-            [
-                'tests = cykooz.testing.runtests:runtests [test]',
-            ]
+        'console_scripts': [
+            'tests = cykooz.testing.runtests:runtests [test]',
+        ]
     },
 )

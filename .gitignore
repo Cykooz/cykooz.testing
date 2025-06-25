@@ -60,5 +60,6 @@ target/
 .*
 !/.gitignore
 !/.dockerignore
+!/.ruff.toml
 /pydev.cfg
 RELEASE-VERSION
