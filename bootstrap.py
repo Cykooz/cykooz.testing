@@ -18,13 +18,13 @@ from tempfile import TemporaryDirectory
 from urllib.request import urlopen
 
 
-BUILDOUT_VERSION = '4.1.12'
-PIP_VERSION = '25.1.1'
+BUILDOUT_VERSION = '3.0.1'
+PIP_VERSION = '24.0.0'
 # With newer version, a build is failed due to
 # an incorrect version of dependencies in some packages.
 # Need to recheck in the future.
-SETUPTOOLS_VERSION = '80.9.0'
-WHEEL_VERSION = '0.46.1'
+SETUPTOOLS_VERSION = '66.1.1'
+WHEEL_VERSION = '0.43.0'
 
 GET_PIP_URL = 'https://bootstrap.pypa.io/get-pip.py'
 
@@ -110,7 +110,6 @@ def main():
         'setuptools': 'setuptools_version',
         'wheel': 'wheel_version',
         'zc.buildout': 'buildout_version',
-        'horse-with-no-namespace': 'horse_with_no_namespace_version',
     }
     dependencies = {}
     for package, arg_name in dep_args.items():
@@ -149,14 +148,6 @@ def main():
             ]
             + dependencies
         )
-        logger.info('Patch horse_with_no_namespace package')
-        _run_cmd(
-            [
-                str(venv_python_path),
-                '-c',
-                'import bootstrap;bootstrap.execute_patch_horse_with_no_namespace()',
-            ],
-        )
 
     logger.info('Bootstrap zc.buildout')
     is_win = platform.system() == 'Windows'
@@ -180,20 +171,6 @@ def main():
 def _run_cmd(cmd):
     if subprocess.call(cmd) != 0:
         raise Exception(f'Failed to execute command:\n {" ".join(cmd)}')
-
-
-def execute_patch_horse_with_no_namespace():
-    import horse_with_no_namespace
-
-    path = horse_with_no_namespace.__file__
-    with open(path, 'rt') as f:
-        content = f.read()
-    content = content.replace(
-        'parent_locals["__path__"], packageName',
-        'parent_locals.get("__path__", ""), packageName',
-    )
-    with open(path, 'wt') as f:
-        f.write(content)
 
 
 if __name__ == '__main__':

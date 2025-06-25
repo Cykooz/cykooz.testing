@@ -14,18 +14,8 @@
 CHANGELOG
 *********
 
-2.1 (2025-06-25)
-================
-
-Features
---------
-
-- Added ``DictCi`` to compare with another dict object
-  without regard to keys that did not present in the ``DictCi`` instance
-  and with case-insensitive comparison of string keys.
-
-2.0 (2025-06-25)
-================
+Next release
+============
 
 Features
 --------
@@ -33,6 +23,9 @@ Features
 - Added ``CiStr`` to compare strings case-insensitively.
 - Added ``RoundFloat`` to compare float numbers rounded to given precision
   in decimal digits.
+- Added ``DictCi`` to compare with another dict object
+  without regard to keys that did not present in the ``DictCi`` instance
+  and with case-insensitive comparison of string keys.
 
 Breaking Changes
 ----------------

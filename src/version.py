@@ -35,12 +35,15 @@ With that setup, a new release can be labelled by simply invoking:
     git tag -a v1.0
 """
 
+from __future__ import print_function
+
 import re
 import subprocess
 import sys
 from typing import Optional
 
-from packaging.version import Version
+from pkg_resources import parse_version as Version
+
 
 __author__ = (
     'Douglas Creager <dcreager@dcreager.net>',
