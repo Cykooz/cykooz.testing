@@ -10,7 +10,7 @@ Utilities
 Dict
 ====
 
-A dict object that can be compared with other dict object
+A dict object that can be compared with another dict object
 without regard to keys that did not presents in the ``Dict`` instance.
 
 .. code-block:: python
@@ -36,6 +36,40 @@ Short alias:
 
     >>> from cykooz.testing import D
     >>> {'a': 1, 'b': 'foo'} == D({'a': 1})
+    True
+
+DictCi
+======
+
+A dict object that can be compared with another dict object
+without regard to keys that did not present in the ``DictCi`` instance
+and with case-insensitive comparison of string keys.
+
+    >>> from cykooz.testing import DictCi
+    >>> expected = DictCi({'Content-type': 1, 'user-Agent': 'foo'})
+    >>> d1 = {'content-Type': 1, 'User-agent': 'foo', 'c': True}
+    >>> d1 == expected
+    True
+    >>> expected == d1
+    True
+    >>> d1 != expected
+    False
+    >>> d2 = {'content-Type': 1, 'c': True}
+    >>> d2 == expected
+    False
+    >>> expected == d2
+    False
+    >>> d1 != d2
+    True
+    >>> DictCi({'Content-type': 1})
+    DictCi({'content-type': 1})
+
+Short alias:
+
+.. code-block:: python
+
+    >>> from cykooz.testing import DCI
+    >>> {'content-Type': 1, 'b': 'foo'} == DCI({'Content-type': 1})
     True
 
 List

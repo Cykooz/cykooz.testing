@@ -12,6 +12,8 @@ __all__ = (
     'Url',
     'Dict',
     'D',
+    'DictCi',
+    'DCI',
     'List',
     'L',
     'AnyValue',
@@ -68,8 +70,8 @@ class Url:
 
 
 class Dict(dict):
-    """A dict object that can be compared with other dict object
-    without regard to keys that did not presents in the ``Dict`` instance.
+    """A dict object that can be compared with another dict object
+    without regard to keys that did not present in the ``Dict`` instance.
 
         >>> expected = Dict(a=1, b='foo')
         >>> d1 = {'a': 1, 'b': 'foo', 'c': True}
@@ -106,6 +108,51 @@ class Dict(dict):
 
     def __repr__(self):
         return 'Dict(%s)' % super(Dict, self).__repr__()
+
+
+class DictCi(Dict):
+    """A dict object that can be compared with another dict object
+    without regard to keys that did not present in the ``DictCi`` instance
+    and with case-insensitive comparison of string keys.
+
+        >>> expected = DictCi({'Content-type': 1, 'user-Agent': 'foo'})
+        >>> d1 = {'content-Type': 1, 'User-agent': 'foo', 'c': True}
+        >>> d1 == expected
+        True
+        >>> expected == d1
+        True
+        >>> d1 != expected
+        False
+        >>> d2 = {'content-Type': 1, 'c': True}
+        >>> d2 == expected
+        False
+        >>> expected == d2
+        False
+        >>> d1 != d2
+        True
+        >>> DictCi({'Content-type': 1})
+        DictCi({'content-type': 1})
+    """
+
+    def __init__(self, *args, **kwargs):
+        super(DictCi, self).__init__(*args, **kwargs)
+        for key, value in list(self.items()):
+            if isinstance(key, str):
+                l_key = key.lower()
+                if l_key != key:
+                    self[l_key] = value
+                    del self[key]
+
+    def __eq__(self, other):
+        other_ci = {}
+        for key, value in other.items():
+            if isinstance(key, str):
+                key = key.lower()
+            other_ci[key] = value
+        return super().__eq__(other_ci)
+
+    def __repr__(self):
+        return 'DictCi(%s)' % super(Dict, self).__repr__()
 
 
 class List(list):
@@ -339,8 +386,8 @@ class Json:
 class CiStr:
     """An instance of this class is compared with strings case-insensitively.
 
-    >>> v = CiStr('Content-Type')
-    >>> other = 'content-type'
+    >>> v = CiStr('Content-type')
+    >>> other = 'content-Type'
     >>> v == other
     True
     >>> other == v
@@ -363,7 +410,14 @@ class CiStr:
     <CiStr: 'content-type'>
     >>> {v: 1}
     {<CiStr: 'content-type'>: 1}
-    >>> [v, v, v] == [other, 2, 'user-agent']
+    >>> list_values = [other, 2, 'user-agent']
+    >>> [v, v, v] == list_values
+    False
+    >>> v in list_values
+    True
+    >>> v in set(list_values)
+    False
+    >>> v in {other: 1}
     False
     >>> [v, v, v] == [other, other, other]
     True
@@ -453,6 +507,7 @@ class RoundFloat:
 # Short aliases
 ANY = AnyValue()
 D = Dict
+DCI = DictCi
 L = List
 R = RegExpString
 J = Json

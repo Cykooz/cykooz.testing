@@ -14,6 +14,16 @@
 CHANGELOG
 *********
 
+Next release
+============
+
+Features
+--------
+
+- Added ``DictCi`` to compare with another dict object
+  without regard to keys that did not present in the ``DictCi`` instance
+  and with case-insensitive comparison of string keys.
+
 2.0 (2025-06-25)
 ================
 
