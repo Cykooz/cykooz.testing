@@ -14,6 +14,21 @@
 CHANGELOG
 *********
 
+Next release
+============
+
+Features
+--------
+
+- Added ``CiStr`` to compare strings case-insensitively.
+- Added ``RoundFloat`` to compare float numbers rounded to given precision
+  in decimal digits.
+
+Breaking Changes
+----------------
+
+- Dropped support Python versions less than 3.9.
+
 1.2 (2021-08-27)
 ================
 

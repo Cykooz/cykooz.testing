@@ -238,6 +238,107 @@ argument of this class.
     >>> '"json str"' == Json('json str')
     True
 
+Short alias:
+
+.. code-block:: python
+
+    >>> from cykooz.testing import J
+    >>> '{"bar": "hello", "foo": 1}' == J({'foo': 1, 'bar': 'hello'})
+    True
+
+CiStr
+=====
+
+An instance of this class is compared with strings case-insensitively.
+
+.. code-block:: python
+
+    >>> from cykooz.testing import CiStr
+    >>> v = CiStr('Content-Type')
+    >>> other = 'content-type'
+    >>> v == other
+    True
+    >>> other == v
+    True
+    >>> other != v
+    False
+    >>> v == 1
+    False
+    >>> 1 == v
+    False
+    >>> v != 1
+    True
+    >>> v == 'user-agent'
+    False
+    >>> 'user-agent' == v
+    False
+    >>> v != 'user-agent'
+    True
+    >>> v
+    <CiStr: 'content-type'>
+    >>> {v: 1}
+    {<CiStr: 'content-type'>: 1}
+    >>> [v, v, v] == [other, 2, 'user-agent']
+    False
+    >>> [v, v, v] == [other, other, other]
+    True
+
+Short alias:
+
+.. code-block:: python
+
+    >>> from cykooz.testing import CI
+    >>> 'Content-Type' == CI('content-type')
+    True
+
+RoundFloat
+==========
+
+An instance of this class is compared with floats rounded to
+given precision in decimal digits.
+
+.. code-block:: python
+
+    >>> from cykooz.testing import RoundFloat
+    >>> v = RoundFloat(1.23456789, 3)
+    >>> v
+    <RoundFloat: 1.235>
+    >>> other = 1.2347
+    >>> v == other
+    True
+    >>> other == v
+    True
+    >>> other != v
+    False
+    >>> v == 1.2341
+    False
+    >>> 1.2341 == v
+    False
+    >>> v != 1.2341
+    True
+    >>> v == 1
+    False
+    >>> v == 'str'
+    False
+    >>> 'str' == v
+    False
+    >>> v != 'str'
+    True
+    >>> {v: 1}
+    {<RoundFloat: 1.235>: 1}
+    >>> [v, v, v] == [other, 2, 'str']
+    False
+    >>> [v, v, v] == [other, other, other]
+    True
+
+Short alias:
+
+.. code-block:: python
+
+    >>> from cykooz.testing import RF
+    >>> 1.23456789 == RF(1.235, 3)
+    True
+
 Complex example
 ***************
 

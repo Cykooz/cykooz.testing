@@ -12,6 +12,7 @@ TWINE="${CUR_DIR}/bin/twine"
 cd src
 
 echo "Check MANIFEST"
+# shellcheck disable=SC2086
 ${BIN_DIR}/check-manifest -p "${PYTHON}"
 echo
 echo "Build SDIST and WHEEL"
@@ -20,7 +21,6 @@ echo
 echo "Check dists by Twine"
 ${TWINE} check dist/*
 rm -rf dist build
-
 
 echo
 echo "Check not committed changes"
@@ -38,7 +38,7 @@ if [[ $1 ]]
 then
     VERSION=$1
 fi
-VERSION=$(${PYTHON} version.py -u ${VERSION})
+VERSION=$(${PYTHON} version.py -u "${VERSION}")
 
 if [[ -z "$VERSION" ]]
 then
@@ -55,15 +55,13 @@ then
     echo Push changes to repository
     git push
 
-    echo Create tag v${VERSION}
-    git tag -a -f -m "Version ${VERSION}" v${VERSION}
+    echo "Create tag v${VERSION}"
+    git tag -a -f -m "Version ${VERSION}" "v${VERSION}"
     git push --tags
 fi
 
-cd "${CUR_DIR}"
-
 echo "Make release"
-cd src
+cd "${CUR_DIR}/src"
 rm -rf dist build
 ${PYTHON} setup.py sdist bdist_wheel
 TWINE_REPOSITORY=${TWINE_REPOSITORY} ${TWINE} upload dist/*

@@ -3,24 +3,33 @@
 :Authors: cykooz
 :Date: 19.11.2015
 """
+
 import json
 import re
-
-import six
-from six.moves.urllib.parse import parse_qsl, unquote_plus, urlparse
 
 
 __all__ = (
     'Url',
-    'Dict', 'D',
-    'List', 'L',
-    'AnyValue', 'ANY',
-    'RegExpString', 'R',
-    'Json', 'J',
+    'Dict',
+    'D',
+    'List',
+    'L',
+    'AnyValue',
+    'ANY',
+    'RegExpString',
+    'R',
+    'Json',
+    'J',
+    'CiStr',
+    'CI',
+    'RoundFloat',
+    'RF',
 )
 
+from urllib.parse import urlparse, parse_qsl, unquote_plus
 
-class Url(object):
+
+class Url:
     """A url object that can be compared with other url objects
     without regard to the vagaries of encoding, escaping, and ordering
     of parameters in query strings.
@@ -164,36 +173,36 @@ class List(list):
         return 'List(%s%s)' % (super(List, self).__repr__(), suffix)
 
 
-class AnyValue(object):
+class AnyValue:
     """Instance of this class is equal to any other values.
 
-        >>> v = AnyValue()
-        >>> v == 1
-        True
-        >>> 1 == v
-        True
-        >>> v != 1
-        False
-        >>> v == {'a': 1, 'b': 'foo'}
-        True
-        >>> v == [1, 2, 3, 'b']
-        True
-        >>> v == AnyValue()
-        True
-        >>> v
-        <any value>
-        >>> {v: 1}
-        Traceback (most recent call last):
-        ...
-        TypeError: unhashable type: 'AnyValue'
-        >>> [v, v, v] == [1, 2, 'foo']
-        True
-        >>> [v, v, 1] == [1, 2, 'foo']
-        False
-        >>> [v, v] == [1, 2, 'foo']
-        False
-        >>> {'a': v, 'b': 2} == {'a': 1, 'b': 2}
-        True
+    >>> v = AnyValue()
+    >>> v == 1
+    True
+    >>> 1 == v
+    True
+    >>> v != 1
+    False
+    >>> v == {'a': 1, 'b': 'foo'}
+    True
+    >>> v == [1, 2, 3, 'b']
+    True
+    >>> v == AnyValue()
+    True
+    >>> v
+    <any value>
+    >>> {v: 1}
+    Traceback (most recent call last):
+    ...
+    TypeError: unhashable type: 'AnyValue'
+    >>> [v, v, v] == [1, 2, 'foo']
+    True
+    >>> [v, v, 1] == [1, 2, 'foo']
+    False
+    >>> [v, v] == [1, 2, 'foo']
+    False
+    >>> {'a': v, 'b': 2} == {'a': 1, 'b': 2}
+    True
     """
 
     __hash__ = None
@@ -208,32 +217,32 @@ class AnyValue(object):
         return '<any value>'
 
 
-class RegExpString(object):
+class RegExpString:
     """Instance of this class is equal to any other values if it is matched to give regexp pattern.
 
-        >>> v = RegExpString('first.*')
-        >>> v == 1
-        False
-        >>> 1 == v
-        False
-        >>> v != 1
-        True
-        >>> v == 'first class'
-        True
-        >>> 'first class' == v
-        True
-        >>> v != 'first class'
-        False
-        >>> v
-        <RegExpString: first.*>
-        >>> {v: 1}
-        Traceback (most recent call last):
-        ...
-        TypeError: unhashable type: 'RegExpString'
-        >>> [v, v, v] == [1, 2, 'first class']
-        False
-        >>> [v, v, v] == ['first class', 'first bus', 'first time']
-        True
+    >>> v = RegExpString('first.*')
+    >>> v == 1
+    False
+    >>> 1 == v
+    False
+    >>> v != 1
+    True
+    >>> v == 'first class'
+    True
+    >>> 'first class' == v
+    True
+    >>> v != 'first class'
+    False
+    >>> v
+    <RegExpString: first.*>
+    >>> {v: 1}
+    Traceback (most recent call last):
+    ...
+    TypeError: unhashable type: 'RegExpString'
+    >>> [v, v, v] == [1, 2, 'first class']
+    False
+    >>> [v, v, v] == ['first class', 'first bus', 'first time']
+    True
     """
 
     def __init__(self, pattern, flags=re.UNICODE):
@@ -243,10 +252,10 @@ class RegExpString(object):
     __hash__ = None
 
     def __eq__(self, other):
-        if isinstance(other, six.binary_type):
+        if isinstance(other, bytes):
             other = other.decode('utf-8')
-        elif not isinstance(other, six.text_type):
-            other = six.text_type(other)
+        elif not isinstance(other, str):
+            other = str(other)
         return bool(self.re.match(other))
 
     def __ne__(self, other):
@@ -256,7 +265,7 @@ class RegExpString(object):
         return '<RegExpString: %s>' % self.pattern
 
 
-class Json(object):
+class Json:
     """An instance of this class will be equal to any 'bytes' or 'str' value
     if object decoded by JSON-decoder from this value is equal to the first
     argument of this class.
@@ -305,13 +314,13 @@ class Json(object):
         if isinstance(other, self.__class__):
             return self.value == other.value
 
-        if isinstance(other, six.binary_type):
+        if isinstance(other, bytes):
             try:
                 other = other.decode('utf-8')
             except UnicodeDecodeError:
                 return False
 
-        if isinstance(other, six.text_type):
+        if isinstance(other, str):
             try:
                 other = json.loads(other, **self.kwargs)
                 return self.value == other
@@ -327,9 +336,125 @@ class Json(object):
         return '<Json: %r>' % self.value
 
 
+class CiStr:
+    """An instance of this class is compared with strings case-insensitively.
+
+    >>> v = CiStr('Content-Type')
+    >>> other = 'content-type'
+    >>> v == other
+    True
+    >>> other == v
+    True
+    >>> other != v
+    False
+    >>> v == 1
+    False
+    >>> 1 == v
+    False
+    >>> v != 1
+    True
+    >>> v == 'user-agent'
+    False
+    >>> 'user-agent' == v
+    False
+    >>> v != 'user-agent'
+    True
+    >>> v
+    <CiStr: 'content-type'>
+    >>> {v: 1}
+    {<CiStr: 'content-type'>: 1}
+    >>> [v, v, v] == [other, 2, 'user-agent']
+    False
+    >>> [v, v, v] == [other, other, other]
+    True
+    """
+
+    __slots__ = ('value',)
+
+    def __init__(self, value):
+        self.value = str(value).lower()
+
+    def __hash__(self):
+        return hash(self.value)
+
+    def __eq__(self, other):
+        if isinstance(other, self.__class__):
+            return self.value == other.value
+        if isinstance(other, str):
+            other = other.lower()
+        return self.value == other
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    def __repr__(self):
+        return '<CiStr: %r>' % self.value
+
+
+class RoundFloat:
+    """An instance of this class is compared with floats rounded to
+    given precision in decimal digits.
+
+    >>> v = RoundFloat(1.23456789, 3)
+    >>> v
+    <RoundFloat: 1.235>
+    >>> other = 1.2347
+    >>> v == other
+    True
+    >>> other == v
+    True
+    >>> other != v
+    False
+    >>> v == 1.2341
+    False
+    >>> 1.2341 == v
+    False
+    >>> v != 1.2341
+    True
+    >>> v == 1
+    False
+    >>> v == 'str'
+    False
+    >>> 'str' == v
+    False
+    >>> v != 'str'
+    True
+    >>> {v: 1}
+    {<RoundFloat: 1.235>: 1}
+    >>> [v, v, v] == [other, 2, 'str']
+    False
+    >>> [v, v, v] == [other, other, other]
+    True
+    """
+
+    __slots__ = ('value', 'ndigits')
+
+    def __init__(self, value: int | float, ndigits: int):
+        self.value = round(value, ndigits)
+        self.ndigits = ndigits
+
+    def __hash__(self):
+        return hash(self.value)
+
+    def __eq__(self, other):
+        if isinstance(other, self.__class__):
+            return self.value == other.value
+        if isinstance(other, (int, float)):
+            other = round(other, self.ndigits)
+        return self.value == other
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    def __repr__(self):
+        return '<RoundFloat: %r>' % self.value
+
+
 # Short aliases
 ANY = AnyValue()
 D = Dict
 L = List
 R = RegExpString
 J = Json
+CI = CiStr
+RF = RoundFloat
