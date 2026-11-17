@@ -1,5 +1,5 @@
 """
-:Version: 1.3.1
+:Version: 1.7.0
 
 Look for the latest version of the script in the GIST:
 https://gist.github.com/Cykooz/118fba100c9ceb76ee822f7541d480c4
@@ -17,14 +17,10 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from urllib.request import urlopen
 
-
-BUILDOUT_VERSION = '3.0.1'
-PIP_VERSION = '24.0.0'
-# With newer version, a build is failed due to
-# an incorrect version of dependencies in some packages.
-# Need to recheck in the future.
-SETUPTOOLS_VERSION = '66.1.1'
-WHEEL_VERSION = '0.43.0'
+BUILDOUT_VERSION = '6.1.0'
+PIP_VERSION = '26.3'
+SETUPTOOLS_VERSION = '84.2.1'
+WHEEL_VERSION = '0.48.0'
 
 GET_PIP_URL = 'https://bootstrap.pypa.io/get-pip.py'
 
@@ -40,22 +36,22 @@ def main():
     parser.add_argument(
         '--buildout_version',
         default=BUILDOUT_VERSION,
-        help='Version of zc.buildout (default: %(default)).',
+        help='Version of zc.buildout (default: %(default)s).',
     )
     parser.add_argument(
         '--pip_version',
         default=PIP_VERSION,
-        help='Version of pip (default: %(default)).',
+        help='Version of pip (default: %(default)s).',
     )
     parser.add_argument(
         '--setuptools_version',
         default=SETUPTOOLS_VERSION,
-        help='Version of setuptools (default: %(default)).',
+        help='Version of setuptools (default: %(default)s).',
     )
     parser.add_argument(
         '--wheel_version',
         default=WHEEL_VERSION,
-        help='Version of wheel (default: %(default)).',
+        help='Version of wheel (default: %(default)s).',
     )
 
     args = parser.parse_args(sys.argv[1:])
@@ -77,7 +73,7 @@ def main():
         venv_python_path = venv_dir / 'bin' / 'python'
 
     if venv_python_path.is_file():
-        logger.debug('Checking version of exists virtual python...')
+        logger.debug('Checking version of exists virtual python.')
         proc = subprocess.Popen(
             [
                 str(venv_python_path),
@@ -91,7 +87,7 @@ def main():
         if env_version != sys.version:
             logger.info(
                 'Removing exists virtual python environment '
-                'due to incorrect version of Python in it...'
+                'due to incorrect version of Python in it.'
             )
             shutil.rmtree(venv_dir)
 
@@ -103,7 +99,7 @@ def main():
             system_site_packages=False,
             with_pip=False,
         )
-        logger.info('Virtual python environment has installed.')
+        logger.info('Virtual python environment was installed.')
 
     dep_args = {
         'pip': 'pip_version',
@@ -162,8 +158,8 @@ def main():
         ]
     )
 
-    # Delete zc.buildout.egg-link from list of develop eggs
-    buildout_link = project_dir / 'develop-eggs' / 'zc.buildout.egg-link'
+    logger.info('Delete zc-buildout.egg-link from list of develop eggs')
+    buildout_link = project_dir / 'develop-eggs' / 'zc-buildout.egg-link'
     if buildout_link.is_file():
         os.remove(buildout_link)
 

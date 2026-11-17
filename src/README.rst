@@ -1,8 +1,8 @@
 **************
-cykooz.testing
+cykooz_testing
 **************
 
-cykooz.testing is collection of helper utilities for testing.
+cykooz_testing is collection of helper utilities for testing.
 
 Utilities
 *********
@@ -15,7 +15,7 @@ without regard to keys that did not presents in the ``Dict`` instance.
 
 .. code-block:: python
 
-    >>> from cykooz.testing import Dict
+    >>> from cykooz_testing import Dict
     >>> expected = Dict(a=1, b='foo')
     >>> d1 = {'a': 1, 'b': 'foo', 'c': True}
     >>> d1 == expected
@@ -34,7 +34,7 @@ Short alias:
 
 .. code-block:: python
 
-    >>> from cykooz.testing import D
+    >>> from cykooz_testing import D
     >>> {'a': 1, 'b': 'foo'} == D({'a': 1})
     True
 
@@ -45,7 +45,9 @@ A dict object that can be compared with another dict object
 without regard to keys that did not present in the ``DictCi`` instance
 and with case-insensitive comparison of string keys.
 
-    >>> from cykooz.testing import DictCi
+.. code-block:: python
+
+    >>> from cykooz_testing import DictCi
     >>> expected = DictCi({'Content-type': 1, 'user-Agent': 'foo'})
     >>> d1 = {'content-Type': 1, 'User-agent': 'foo', 'c': True}
     >>> d1 == expected
@@ -68,7 +70,7 @@ Short alias:
 
 .. code-block:: python
 
-    >>> from cykooz.testing import DCI
+    >>> from cykooz_testing import DCI
     >>> {'content-Type': 1, 'b': 'foo'} == DCI({'Content-type': 1})
     True
 
@@ -80,7 +82,7 @@ without regard to extra items contains in the other list object.
 
 .. code-block:: python
 
-    >>> from cykooz.testing import List
+    >>> from cykooz_testing import List
     >>> expected = List([1, 'foo'])
     >>> l1 = [1, 'foo', True]
     >>> l1 == expected
@@ -116,7 +118,7 @@ Short alias:
 
 .. code-block:: python
 
-    >>> from cykooz.testing import L
+    >>> from cykooz_testing import L
     >>> [1, 'foo', True] == L([1, 'foo'])
     True
 
@@ -127,7 +129,7 @@ Instance of this class is equal to any other values.
 
 .. code-block:: python
 
-    >>> from cykooz.testing import AnyValue
+    >>> from cykooz_testing import AnyValue
     >>> v = AnyValue()
     >>> v == 1
     True
@@ -160,7 +162,7 @@ Short alias:
 
 .. code-block:: python
 
-    >>> from cykooz.testing import ANY
+    >>> from cykooz_testing import ANY
     >>> 1 == ANY
     True
 
@@ -172,7 +174,7 @@ to give regexp pattern.
 
 .. code-block:: python
 
-    >>> from cykooz.testing import RegExpString
+    >>> from cykooz_testing import RegExpString
     >>> v = RegExpString('first.*')
     >>> v == 1
     False
@@ -201,7 +203,7 @@ Short alias:
 
 .. code-block:: python
 
-    >>> from cykooz.testing import R
+    >>> from cykooz_testing import R
     >>> 'first class' == R('first.*')
     True
 
@@ -214,7 +216,7 @@ of parameters in query strings.
 
 .. code-block:: python
 
-    >>> from cykooz.testing import Url
+    >>> from cykooz_testing import Url
     >>> url1 = Url('https://domain.com/container?limit=6&offset=0')
     >>> url2 = Url('https://domain.com/container?offset=0&limit=6')
     >>> url1 == url2
@@ -238,7 +240,7 @@ argument of this class.
 
 .. code-block:: python
 
-    >>> from cykooz.testing import Json
+    >>> from cykooz_testing import Json
     >>> v = Json({'foo': 1, 'bar': 'hello'})
     >>> other = '{"bar": "hello", "foo": 1}'
     >>> v == other
@@ -276,7 +278,7 @@ Short alias:
 
 .. code-block:: python
 
-    >>> from cykooz.testing import J
+    >>> from cykooz_testing import J
     >>> '{"bar": "hello", "foo": 1}' == J({'foo': 1, 'bar': 'hello'})
     True
 
@@ -287,7 +289,7 @@ An instance of this class is compared with strings case-insensitively.
 
 .. code-block:: python
 
-    >>> from cykooz.testing import CiStr
+    >>> from cykooz_testing import CiStr
     >>> v = CiStr('Content-Type')
     >>> other = 'content-type'
     >>> v == other
@@ -321,7 +323,7 @@ Short alias:
 
 .. code-block:: python
 
-    >>> from cykooz.testing import CI
+    >>> from cykooz_testing import CI
     >>> 'Content-Type' == CI('content-type')
     True
 
@@ -333,7 +335,7 @@ given precision in decimal digits.
 
 .. code-block:: python
 
-    >>> from cykooz.testing import RoundFloat
+    >>> from cykooz_testing import RoundFloat
     >>> v = RoundFloat(1.23456789, 3)
     >>> v
     <RoundFloat: 1.235>
@@ -369,7 +371,7 @@ Short alias:
 
 .. code-block:: python
 
-    >>> from cykooz.testing import RF
+    >>> from cykooz_testing import RF
     >>> 1.23456789 == RF(1.235, 3)
     True
 
@@ -378,7 +380,7 @@ Complex example
 
 .. code-block:: python
 
-    >>> from cykooz.testing import D, L, R, J, Url, ANY
+    >>> from cykooz_testing import D, L, R, J, Url, ANY
     >>> some_value = {
     ...     'created': '2020-04-14T12:34:00.002000+00:00',
     ...     'is_active': True,

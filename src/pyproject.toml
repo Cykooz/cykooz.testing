@@ -1,0 +1,64 @@
+[build-system]
+requires = [
+    "setuptools == 84.2.1",
+    "pkg-resources-backport == 1.0.1",
+]
+build-backend = "setuptools.build_meta"
+
+
+[tool.setuptools.dynamic]
+version = { attr = "version.__version__" }
+readme = { file = ["README.rst", "CHANGES.rst"] }
+
+
+[project]
+name = "cykooz_testing"
+dynamic = ["version", "readme"]
+description = "Collection of helper utilities for testing."
+authors = [
+    { name = "Kirill Kuzminykh", email = "cykooz@gmail.com" }
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.15",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+    "Topic :: Software Development :: Testing",
+]
+requires-python = ">=3.12"
+dependencies = []
+
+
+[project.urls]
+Homepage = "https://github.com/Cykooz/cykooz.testing"
+Repository = "https://github.com/Cykooz/cykooz.testing.git"
+
+
+[project.optional-dependencies]
+test = [
+    "pytest",
+]
+
+
+[project.scripts]
+tests = "cykooz_testing.runtests:runtests [test]"
+
+
+[tool.pytest]
+minversion = "9.0"
+addopts = ["--pyargs", "--doctest-modules", "--doctest-ignore-import-errors"]
+markers = ["now"]
+python_files = ["tests.py", "test_*.py"]
+doctest_optionflags = [
+    "NORMALIZE_WHITESPACE",
+    "IGNORE_EXCEPTION_DETAIL",
+    "ALLOW_UNICODE",
+    "ELLIPSIS",
+]
+#filterwarnings = ["ignore::DeprecationWarning"]

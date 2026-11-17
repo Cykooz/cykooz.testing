@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
 """Calculates the current version number.
 
-If possible, uses output of “git describe” modified to conform to the
-visioning scheme that setuptools uses (see PEP 440).  Releases must be
-labelled with annotated tags (signed tags are annotated) of the following
+If it is possible, use output of “git describe” modified to conform to the
+visioning scheme that setuptools uses (see PEP 440). Releases must be
+labeled with annotated tags (signed tags are annotated) in the following
 format:
 
    v<num>(.<num>)+[{a|b|c|rc}<num>(.<num>)*]
@@ -30,20 +29,17 @@ tarballs (as should version.py file).  To do this, run:
     echo include RELEASE-VERSION version.py >>MANIFEST.in
     echo RELEASE-VERSION >>.gitignore
 
-With that setup, a new release can be labelled by simply invoking:
+With that setup, a new release can be labeled by simply invoking:
 
     git tag -a v1.0
 """
-
-from __future__ import print_function
 
 import re
 import subprocess
 import sys
 from typing import Optional
 
-from pkg_resources import parse_version as Version
-
+from packaging.version import Version
 
 __author__ = (
     'Douglas Creager <dcreager@dcreager.net>',
@@ -64,7 +60,7 @@ RELEASE_VERSION_FILE = 'RELEASE-VERSION'
 _PEP440_SHORT_VERSION_RE = r'\d+(?:\.\d+)+(?:(?:[abc]|rc)\d+(?:\.\d+)*)?'
 _PEP440_VERSION_RE = r'^%s(?:\.post\d+)?(?:\.dev\d+)?$' % _PEP440_SHORT_VERSION_RE
 _GIT_DESCRIPTION_RE = (
-    r'^v(?P<ver>%s)-(?P<commits>\d+)-g(?P<sha>[\da-f]+)$' % _PEP440_SHORT_VERSION_RE
+        r'^v(?P<ver>%s)-(?P<commits>\d+)-g(?P<sha>[\da-f]+)$' % _PEP440_SHORT_VERSION_RE
 )
 
 
@@ -107,11 +103,11 @@ def read_release_version() -> Optional[Version]:
             fd.close()
         if not re.search(_PEP440_VERSION_RE, ver):
             sys.stderr.write(
-                'version: release version (%s) is invalid, will use it anyway\n' % ver
+                f'version: release version ({ver}) is invalid, will use it anyway\n'
             )
         return Version(ver)
     except Exception:
-        return
+        return None
 
 
 def write_release_version(version: Version):
@@ -147,8 +143,8 @@ def main():
         '-u',
         dest='version',
         help='replace title "Next release" in CHANGES.txt on given version number '
-        'and current date. You can use "auto" as version number for generate '
-        'version number automatically',
+             'and current date. You can use "auto" as version number for generate '
+             'version number automatically',
     )
     args = parser.parse_args()
     args_version = (args.version or '').strip()
@@ -175,7 +171,8 @@ def main():
             version = _increase_patch(version, 1)
         else:
             version = Version(args_version)
-        replace = '%s (%s)' % (version, datetime.date.today().strftime('%Y-%m-%d'))
+        release_date = datetime.date.today().strftime('%Y-%m-%d')
+        replace = f'{version} ({release_date})'
         replace = '%s\n%s\n' % (replace, '=' * len(replace))
         new_changes = changes.replace(find, replace)
         if new_changes != changes:
@@ -194,3 +191,5 @@ def _increase_patch(version: Version, inc: int) -> Version:
 
 if __name__ == '__main__':
     main()
+else:
+    __version__ = get_version()

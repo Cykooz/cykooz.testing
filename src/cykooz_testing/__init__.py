@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 :Authors: cykooz
 :Date: 19.11.2015
@@ -7,28 +6,27 @@
 import json
 import re
 
-
 __all__ = (
-    'Url',
-    'Dict',
-    'D',
-    'DictCi',
-    'DCI',
-    'List',
-    'L',
-    'AnyValue',
     'ANY',
-    'RegExpString',
-    'R',
-    'Json',
-    'J',
-    'CiStr',
     'CI',
-    'RoundFloat',
+    'DCI',
     'RF',
+    'AnyValue',
+    'CiStr',
+    'D',
+    'Dict',
+    'DictCi',
+    'J',
+    'Json',
+    'L',
+    'List',
+    'R',
+    'RegExpString',
+    'RoundFloat',
+    'Url',
 )
 
-from urllib.parse import urlparse, parse_qsl, unquote_plus
+from urllib.parse import parse_qsl, unquote_plus, urlparse
 
 
 class Url:
@@ -86,6 +84,10 @@ class Dict(dict):
         False
         >>> expected == d2
         False
+        >>> expected == None
+        False
+        >>> expected == [1, 2, 3]
+        False
         >>> d1 != d2
         True
         >>> Dict({'a': 1})
@@ -93,9 +95,11 @@ class Dict(dict):
     """
 
     def __init__(self, *args, **kwargs):
-        super(Dict, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def __eq__(self, other):
+        if other is None or not hasattr(other, 'items'):
+            return False
         for key, value in self.items():
             if key not in other:
                 return False
@@ -107,7 +111,7 @@ class Dict(dict):
         return not self.__eq__(other)
 
     def __repr__(self):
-        return 'Dict(%s)' % super(Dict, self).__repr__()
+        return f'Dict({super().__repr__()})'
 
 
 class DictCi(Dict):
@@ -128,6 +132,10 @@ class DictCi(Dict):
         False
         >>> expected == d2
         False
+        >>> expected == None
+        False
+        >>> expected == [1, 2, 3]
+        False
         >>> d1 != d2
         True
         >>> DictCi({'Content-type': 1})
@@ -135,7 +143,7 @@ class DictCi(Dict):
     """
 
     def __init__(self, *args, **kwargs):
-        super(DictCi, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         for key, value in list(self.items()):
             if isinstance(key, str):
                 l_key = key.lower()
@@ -144,6 +152,8 @@ class DictCi(Dict):
                     del self[key]
 
     def __eq__(self, other):
+        if other is None or not hasattr(other, 'items'):
+            return False
         other_ci = {}
         for key, value in other.items():
             if isinstance(key, str):
@@ -152,7 +162,7 @@ class DictCi(Dict):
         return super().__eq__(other_ci)
 
     def __repr__(self):
-        return 'DictCi(%s)' % super(Dict, self).__repr__()
+        return f'DictCi({super(Dict, self).__repr__()})'
 
 
 class List(list):
@@ -195,7 +205,7 @@ class List(list):
     """
 
     def __init__(self, *args, ignore_order=False, **kwargs):
-        super(List, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.ignore_order = ignore_order
 
     def __eq__(self, other):
@@ -217,7 +227,7 @@ class List(list):
         suffix = ''
         if self.ignore_order:
             suffix = ', ignore_order=True'
-        return 'List(%s%s)' % (super(List, self).__repr__(), suffix)
+        return f'List({super().__repr__()}{suffix})'
 
 
 class AnyValue:
@@ -309,7 +319,7 @@ class RegExpString:
         return not self.__eq__(other)
 
     def __repr__(self):
-        return '<RegExpString: %s>' % self.pattern
+        return f'<RegExpString: {self.pattern}>'
 
 
 class Json:
@@ -380,7 +390,7 @@ class Json:
         return not self.__eq__(other)
 
     def __repr__(self):
-        return '<Json: %r>' % self.value
+        return f'<Json: {self.value!r}>'
 
 
 class CiStr:
@@ -442,7 +452,7 @@ class CiStr:
         return not self.__eq__(other)
 
     def __repr__(self):
-        return '<CiStr: %r>' % self.value
+        return f'<CiStr: {self.value!r}>'
 
 
 class RoundFloat:
@@ -481,9 +491,9 @@ class RoundFloat:
     True
     """
 
-    __slots__ = ('value', 'ndigits')
+    __slots__ = ('ndigits', 'value')
 
-    def __init__(self, value: int | float, ndigits: int):
+    def __init__(self, value: float, ndigits: int):
         self.value = round(value, ndigits)
         self.ndigits = ndigits
 
@@ -501,7 +511,7 @@ class RoundFloat:
         return not self.__eq__(other)
 
     def __repr__(self):
-        return '<RoundFloat: %r>' % self.value
+        return f'<RoundFloat: {self.value!r}>'
 
 
 # Short aliases
